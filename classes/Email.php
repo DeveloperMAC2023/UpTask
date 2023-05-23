@@ -34,8 +34,8 @@ Class Email {
         $mail->CharSet = 'UTF-8';
 
         $contenido = "<html>";
-        $contenido .= "<p><strong>Hola " . $this->nombre . "</strong> Has creado tu cuenta en App Salon, solo debes confirmarla presionando el siguiente enlace</p>";
-        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/confirmar-cuenta?token=" . $this->token . "'>Confirmar Cuenta</a> </p>";
+        $contenido .= "<p><strong>Hola " . $this->nombre . "</strong> Has creado tu cuenta en UpTask, solo debes confirmarla presionando el siguiente enlace</p>";
+        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/confirmar?token=" . $this->token . "'>Confirmar Cuenta</a> </p>";
         $contenido .= "<p>Si tu no solicitaste una cuenta, puedes ignorar este mensaje</p>";
         $contenido .= "</html>";
 
@@ -54,9 +54,9 @@ Class Email {
         $mail->Port = 2525;
         $mail->Username ='3ae3ae3b1bf88f';
         $mail->Password = '0ce1f5b5a668a1';
-         
-        $mail->setFROM('cuentas@appsalon.com');
-        $mail->addAddress('cuentas@appsalon.com','AppSalon.com');
+
+        $mail->setFROM('cuentas@uptask.com');
+        $mail->addAddress('cuentas@uptask.com','UpTask.com');
         $mail->Subject = 'Reestablece tu Password';
         
         // Set HTML
@@ -65,7 +65,7 @@ Class Email {
 
         $contenido = "<html>";
         $contenido .= "<p><strong>Hola " . $this->nombre . "</strong> Has solicitado reestablecer tu password, sigue el siguiente enlace para hacerlo.</p>";
-        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/recuperar?token=" . $this->token . "'>Reestablecer Password</a> </p>";
+        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/reestablecer?token=" . $this->token . "'>Reestablecer Password</a> </p>";
         $contenido .= "<p>Si tu no solicitaste una cuenta, puedes ignorar este mensaje</p>";
         $contenido .= "</html>";
 
