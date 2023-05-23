@@ -9,11 +9,33 @@ use Model\Usuario;
 class LoginController{
 
     public static function login(Router $router){         
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $alertas = [];
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $usuario = new Usuario($_POST);
+            $alertas = $usuario->validarLogin();
+            if (empty($alertas)){
+                $usuario = Usuario::where('email', $usuario->email);
+                if (!$usuario || !$usuario->confirmado) {
+                    Usuario::setAlerta('error','El usuario no existe o no esta confirmado');
+                } else {
+                    if (password_verify($_POST['password'], $usuario->password)) {
+                        session_start();
+                        $_SESSION['id'] = $usuario->id;
+                        $_SESSION['nombre'] = $usuario->nombre;
+                        $_SESSION['email'] = $usuario->email;
+                        $_SESSION['login'] = true;
+                        header('Location: /proyectos');
+                    } else {
+                        Usuario::setAlerta('error','Password incorrecto');
+                    }
+                }
+            }
         }
+        $alertas = Usuario::getAlertas();
         $router->render('auth/login', [
-            'titulo' => 'Iniciar Sesión'
+            'titulo' => 'Iniciar Sesión',
+            'alertas' => $alertas
         ]);
     }
 
@@ -43,6 +65,7 @@ class LoginController{
                     $resultado = $usuario->guardar();
                     // Enviar Email
                     $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+                    $email->enviarConfirmacion();
                     if ($resultado) {
                         header('Location: /mensaje');
                     }
@@ -123,7 +146,7 @@ class LoginController{
 
     public static function confirmar(Router $router){
         $token = s($_GET['token']);
-        if (!token) {
+        if (!$token) {
             header('Location: /');
         }
         $usuario = Usuario::where('token',$token);
@@ -131,10 +154,10 @@ class LoginController{
             Usuario::setAlerta('error','Token no válido');
         } else {
             $usuario->confirmado =1;
-            $usuario->token = null;
+            $usuario->token = '';
             unset($usuario->password2);
             $usuario->guardar();
-            Usuario::setAlerta('exito','Cuenta Comprada Correctamente');
+            Usuario::setAlerta('exito','Cuenta Comprobada Correctamente');
         }
         $alertas = Usuario::getAlertas();
         $router->render('auth/confirmar', [
