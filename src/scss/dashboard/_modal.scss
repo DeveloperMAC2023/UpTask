@@ -41,6 +41,11 @@
             justify-content: space-between;
         }
 
+        input[type="text"] {
+            border: 1px solid v.$gris;
+            border-radius: .5rem;
+        }
+
         &.animar {
             position: relative;
             top: 50%;
